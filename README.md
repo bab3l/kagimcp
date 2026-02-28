@@ -96,4 +96,8 @@ docker compose ps
 
 - Add repository secret: `KAGI_API_KEY`
 - Optional repository variable: `KAGI_LIVE_TEST_QUERY`
+- Optional repository variable: `KAGI_LIVE_TEST_MODE` (`auto`, `search`, `summarizer`; default `auto`)
+- Optional repository variable: `KAGI_LIVE_TEST_SUMMARY_URL` (default `https://www.kagi.com`)
 - Trigger manually from Actions (`Live API Test`) or wait for weekly schedule.
+
+In `auto` mode, the workflow tries `kagi_search_fetch` first and falls back to `kagi_summarizer` when Search API access is unauthorized.

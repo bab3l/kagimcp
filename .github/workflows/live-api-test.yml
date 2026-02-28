@@ -49,7 +49,9 @@ jobs:
 
       - name: Execute live MCP tool call
         env:
+          KAGI_LIVE_TEST_MODE: ${{ vars.KAGI_LIVE_TEST_MODE }}
           KAGI_LIVE_TEST_QUERY: ${{ vars.KAGI_LIVE_TEST_QUERY }}
+          KAGI_LIVE_TEST_SUMMARY_URL: ${{ vars.KAGI_LIVE_TEST_SUMMARY_URL }}
         run: |
           docker run --rm \
             --entrypoint python \
