@@ -2,6 +2,26 @@
 
 This repo builds a Docker image that runs `kagimcp` over network transport (`streamable-http` by default), not only local `stdio/uvx` usage.
 
+## Quickstart (GHCR)
+
+Most users should run directly from GHCR:
+
+```bash
+docker run --rm -p 8000:8000 \
+  -e KAGI_API_KEY=YOUR_KEY \
+  -e MCP_TRANSPORT=streamable-http \
+  ghcr.io/bab3l/kagimcp-network:latest
+```
+
+Then connect your MCP client to `http://localhost:8000/mcp`.
+
+To use Docker Compose:
+
+```bash
+cp .env.example .env
+docker compose up -d
+```
+
 ## License and usage notes
 
 - Upstream project [`kagisearch/kagimcp`](https://github.com/kagisearch/kagimcp) is MIT licensed.
@@ -69,9 +89,10 @@ Authentication for image publish uses built-in `GITHUB_TOKEN`.
 
 If the package appears private after first publish, set visibility to public in GitHub Packages settings.
 
-Manual rebuild option:
+Manual rebuild options:
 
 - Run workflow dispatch and set `upstream_ref` (tag, branch, or commit SHA).
+- Set `force_build=true` to publish even when upstream ref is unchanged.
 
 ## Docker Compose
 

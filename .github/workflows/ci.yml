@@ -41,6 +41,7 @@ jobs:
       - name: MCP protocol smoke test
         run: |
           docker run --rm \
+            --entrypoint python \
             --network container:kagimcp-ci \
             -v "$PWD:/work" \
             -w /work \
