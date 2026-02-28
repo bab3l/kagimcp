@@ -46,7 +46,7 @@ jobs:
             -v "$PWD:/work" \
             -w /work \
             kagimcp-network:ci \
-            python scripts/mcp_streamable_smoke.py
+            scripts/mcp_streamable_smoke.py
 
       - name: Cleanup
         if: always()
