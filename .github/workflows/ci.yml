@@ -38,6 +38,15 @@ jobs:
           docker logs kagimcp-ci
           exit 1
 
+      - name: MCP protocol smoke test
+        run: |
+          docker run --rm \
+            --network container:kagimcp-ci \
+            -v "$PWD:/work" \
+            -w /work \
+            kagimcp-network:ci \
+            python scripts/mcp_streamable_smoke.py
+
       - name: Cleanup
         if: always()
         run: |
