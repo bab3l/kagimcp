@@ -1,0 +1,24 @@
+services:
+  kagimcp:
+    build:
+      context: .
+      args:
+        KAGIMCP_REF: ${KAGIMCP_REF:-v0.1.4}
+    image: ghcr.io/${GHCR_OWNER:-local}/kagimcp-network:${IMAGE_TAG:-dev}
+    container_name: kagimcp-network
+    ports:
+      - "${MCP_PORT:-8000}:8000"
+    environment:
+      KAGI_API_KEY: ${KAGI_API_KEY}
+      KAGI_SUMMARIZER_ENGINE: ${KAGI_SUMMARIZER_ENGINE:-cecil}
+      MCP_TRANSPORT: ${MCP_TRANSPORT:-streamable-http}
+      MCP_HOST: ${MCP_HOST:-0.0.0.0}
+      MCP_PORT: 8000
+      MCP_PATH: ${MCP_PATH:-/mcp}
+    healthcheck:
+      test: ["CMD", "python", "/app/healthcheck.py"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
