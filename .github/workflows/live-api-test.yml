@@ -56,6 +56,9 @@ jobs:
           docker run --rm \
             --entrypoint python \
             --network container:kagimcp-live \
+            -e KAGI_LIVE_TEST_MODE \
+            -e KAGI_LIVE_TEST_QUERY \
+            -e KAGI_LIVE_TEST_SUMMARY_URL \
             -v "$PWD:/work" \
             -w /work \
             kagimcp-network:live \
