@@ -89,3 +89,11 @@ docker compose ps
   - GitHub Actions versions
   - Docker base image dependencies in `Dockerfile`
 - `ci.yml` runs on push/PR and validates the image can build and become healthy.
+- `security-scan.yml` runs Trivy filesystem and image vulnerability scans.
+- `live-api-test.yml` runs a real MCP tool call (`kagi_search_fetch`) against Kagi API using repo secret `KAGI_API_KEY`.
+
+### Live API test setup
+
+- Add repository secret: `KAGI_API_KEY`
+- Optional repository variable: `KAGI_LIVE_TEST_QUERY`
+- Trigger manually from Actions (`Live API Test`) or wait for weekly schedule.

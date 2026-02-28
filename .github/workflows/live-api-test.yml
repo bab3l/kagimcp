@@ -1,0 +1,59 @@
+name: Live API Test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  live-mcp-tool-call:
+    if: ${{ secrets.KAGI_API_KEY != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          docker build -t kagimcp-network:live --build-arg KAGIMCP_REF=$(cat .upstream-version) .
+
+      - name: Run server container with live key
+        run: |
+          docker run -d --name kagimcp-live \
+            -e KAGI_API_KEY="${{ secrets.KAGI_API_KEY }}" \
+            -e MCP_TRANSPORT=streamable-http \
+            -e MCP_PATH=/mcp \
+            -p 8000:8000 \
+            kagimcp-network:live
+
+      - name: Wait for health
+        run: |
+          for i in {1..30}; do
+            status=$(docker inspect --format='{{.State.Health.Status}}' kagimcp-live 2>/dev/null || true)
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs kagimcp-live
+          exit 1
+
+      - name: Execute live MCP tool call
+        env:
+          KAGI_LIVE_TEST_QUERY: ${{ vars.KAGI_LIVE_TEST_QUERY }}
+        run: |
+          docker run --rm \
+            --entrypoint python \
+            --network container:kagimcp-live \
+            -v "$PWD:/work" \
+            -w /work \
+            kagimcp-network:live \
+            scripts/mcp_live_tool_test.py
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker rm -f kagimcp-live || true
