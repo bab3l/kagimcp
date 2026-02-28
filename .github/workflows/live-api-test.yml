@@ -10,11 +10,17 @@ permissions:
 
 jobs:
   live-mcp-tool-call:
-    if: ${{ secrets.KAGI_API_KEY != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate KAGI_API_KEY secret is set
+        run: |
+          if [ -z "${{ secrets.KAGI_API_KEY }}" ]; then
+            echo "KAGI_API_KEY secret is not configured for this repository."
+            exit 1
+          fi
 
       - name: Build image
         run: |
